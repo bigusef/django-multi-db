@@ -1,3 +1,10 @@
 from django.db import models
 
-# Create your models here.
+
+class Products(models.Model):
+    """
+    This model will mapping to default database
+    """
+    name = models.CharField(max_length=50)
+    price = models.ImageField()
+    quantity = models.ImageField()
