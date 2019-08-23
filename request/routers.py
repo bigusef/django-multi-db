@@ -25,20 +25,25 @@ class DatabaseRouter(object):
         """
         Allow relations if a model in the request app is involved.
         """
-        if obj1._meta.app_label == 'request' or obj2._meta.app_label == 'request':
+        # Allow any relation between two models that are both in the request app.
+        if obj1._meta.app_label == 'request' and obj2._meta.app_label == 'request':
             return True
-        return None
+        # No opinion if neither object is in the request app (defer to default or other routers).
+        elif 'request' not in [obj1._meta.app_label, obj2._meta.app_label]:
+            return None
+        # Block relationship if one object is in the request app and the other isn't.
+        return False
 
     def allow_migrate(self, db, app_label, model_name=None, **hints):
         """
         Make sure the request app only appears in the 'mongo'
         database.
         """
+        # The request app should be migrated only on the mongo database.
         if app_label == 'request':
-            # The request app should be migrated only on the mongo database.
             return db == 'mongo'
+        # Ensure that all other apps don't get migrated on the mongo database.
         elif db == 'mongo':
-            # Ensure that all other apps don't get migrated on the mongo database.
             return False
         # No opinion for all other scenarios
         return None
