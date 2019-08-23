@@ -1,3 +1,9 @@
-from django.db import models
+from djongo import models
 
-# Create your models here.
+
+class Order(models.Model):
+    """
+    This model will mapping to mongo database
+    """
+    order_name = models.CharField(max_length=50)
+    invoice = models.FloatField()
